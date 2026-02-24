@@ -152,6 +152,12 @@ export interface AISummaryWithContent extends AISummary {
     title: string;
     url: string;
     status: ContentStatus;
+    content_categories: {
+      category: {
+        id: string;
+        name: string;
+      } | null;
+    }[];
   } | null;
 }
 

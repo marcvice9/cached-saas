@@ -28,7 +28,7 @@ export async function searchVault(query: string): Promise<AISummaryWithContent[]
 
   const { data, error } = await supabase
     .from("ai_summaries")
-    .select("*, content:saved_content(id, title, url, status)")
+    .select("*, content:saved_content(id, title, url, status, content_categories(category:categories(id, name)))")
     .textSearch("search_vector", tsQuery)
     .order("created_at", { ascending: false });
 
@@ -56,7 +56,7 @@ export async function listVaultSummaries(): Promise<AISummaryWithContent[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("ai_summaries")
-    .select("*, content:saved_content(id, title, url, status)")
+    .select("*, content:saved_content(id, title, url, status, content_categories(category:categories(id, name)))")
     .order("created_at", { ascending: false });
 
   if (error) throw new Error(error.message);
