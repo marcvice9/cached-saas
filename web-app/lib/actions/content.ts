@@ -22,22 +22,30 @@ export async function listContent(
       {
         id: "stub-content-1",
         user_id: "stub-user",
-        category_id: "stub-cat-1",
         title: "Transformers in Vision",
         url: "https://arxiv.org/abs/2010.11929",
+        description: "Survey paper on applying transformers to computer vision tasks.",
+        thumbnail_url: null,
+        source_platform: "ARTICLE",
+        content_format: "LONG_READ",
+        estimated_duration_minutes: 25,
         categories: [{ id: "stub-cat-1", name: "AI/ML" }],
-        status: "pending",
+        status: "QUEUED",
         created_at: now,
         updated_at: now,
       },
       {
         id: "stub-content-2",
         user_id: "stub-user",
-        category_id: "stub-cat-2",
         title: "Practical CSS Grid tricks",
         url: "https://css-tricks.com/snippets/css/complete-guide-grid/",
+        description: "Reference guide and patterns for modern CSS Grid layout.",
+        thumbnail_url: null,
+        source_platform: "ARTICLE",
+        content_format: "SHORT_READ",
+        estimated_duration_minutes: 12,
         categories: [{ id: "stub-cat-2", name: "Frontend" }],
-        status: "pending",
+        status: "QUEUED",
         created_at: now,
         updated_at: now,
       },
@@ -73,8 +81,15 @@ export async function listContent(
   const catMap = new Map<string, { id: string; name: string }[]>();
   for (const row of catRows || []) {
     if (!row.category) continue;
+
+    const rawCategory = Array.isArray(row.category)
+      ? row.category[0]
+      : row.category;
+    if (!rawCategory) continue;
+
+    const category = rawCategory as { id: string; name: string };
     const current = catMap.get(row.content_id) || [];
-    current.push(row.category as { id: string; name: string });
+    current.push(category);
     catMap.set(row.content_id, current);
   }
 
