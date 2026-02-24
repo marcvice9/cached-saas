@@ -44,18 +44,20 @@ export default function SaveUrlForm({
         return;
       }
 
-      // Fire-and-forget: generate AI summary in the background right after save
+      setUrl("");
+      setSelectedCategories([]);
+      router.refresh();
+
+      // Generate AI summary in background, then refresh to show it
       if (json.data?.id) {
         fetch("/api/ai/generate-summary", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ contentId: json.data.id }),
-        }).catch(() => {});
+        })
+          .then(() => router.refresh())
+          .catch(() => {});
       }
-
-      setUrl("");
-      setSelectedCategories([]);
-      router.refresh();
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
