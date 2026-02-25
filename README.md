@@ -124,14 +124,44 @@ Cached adds an execution layer between "saved" and "done."
 ## Tech Stack
 | Layer | Technology |
 |---|---|
-| Frontend | Next.js (App Router) |
-| Styling | Tailwind CSS + shadcn/ui |
-| Backend | Next.js Server Actions + API Routes |
+| Frontend | Next.js 15 (App Router, React 19) |
+| Styling | Tailwind CSS |
+| Backend | Next.js Server Components + Server Actions + Route Handlers |
 | Database | Supabase (PostgreSQL) |
-| Auth | Supabase Auth (Google OAuth) |
+| Auth | Supabase Auth (GitHub OAuth) |
 | Billing | Stripe |
-| AI | Claude API (Anthropic) |
+| AI APIs | Vercel AI SDK + Groq (`llama-3.3-70b-versatile`) |
+| Queue | Postgres-backed status queue (`saved_content.status`) + weekly scheduler job |
+| Email | Resend |
 | Deployment | Vercel |
+
+## Architecture Notes
+### Server Components
+- Main app pages fetch data directly on the server (`app/app/page.tsx`, `app/app/schedule/page.tsx`, `app/app/vault/page.tsx`) using parallel reads from Supabase.
+- This keeps auth-protected data loading on the server and sends hydrated UI props to client components.
+
+### Server Actions
+- Domain actions live in `web-app/lib/actions/*` and are used for authenticated reads/writes:
+- Categories and slots CRUD (`categories.ts`, `slots.ts`)
+- Content and vault operations (`content.ts`, `ai.ts`)
+- Scheduling flows (`schedule.ts` with `generateSchedule`, `completeBlock`, `skipBlock`)
+- Billing sync (`billing.ts`)
+
+### Route Handlers
+- Content ingestion: `POST /api/content/save`
+- AI: `POST /api/ai/generate-summary`, `POST /api/ai/suggest-category`
+- Billing: `POST /api/stripe/checkout`, `POST /api/stripe/portal`, `POST /api/stripe/webhook`
+- Auth callbacks: `/auth/login`, `/auth/callback`, `/auth/logout`
+
+### Scheduled Jobs
+- `GET /api/cron/generate-schedules` generates next-week schedules for all users.
+- Protected with `Authorization: Bearer ${CRON_SECRET}` and uses a Supabase service-role client.
+
+## Data Model Gist
+- `SavedItem` -> `saved_content`: captured URL + metadata (title, source, format, duration) + lifecycle status (`QUEUED`, `SCHEDULED`, `CONSUMED`, etc.).
+- `Window` -> `learning_slots`: reusable weekly availability windows (day/time range, allowed formats, preferred category).
+- `Schedule` -> `scheduled_blocks`: concrete dated assignments mapping content into a window with execution status (`UPCOMING`, `COMPLETED`, `SKIPPED`).
+- `Summary` -> `ai_summaries`: generated summary text, key takeaways, suggested topics, and editable user notes with full-text search support.
 
 ## Positioning
 Cached is not:
