@@ -1,234 +1,168 @@
 # Cached
 ### From saved to scheduled. From intention to action.
 
----
+Cached is a content execution system for people who save great content but rarely make time to consume it.
 
-## What is Cached?
+## Value Proposition
+Most tools help you collect content. Cached helps you finish it.
 
-Cached is an intelligent content scheduling app that turns scattered saved links into structured, actionable time on your calendar.
+Cached turns a messy backlog of links into scheduled, realistic learning blocks on your calendar, aligned to your goals and available time.
 
-People save content everywhere — YouTube, X (Twitter), LinkedIn, Spotify, podcasts, newsletters, GitHub, articles — but when it’s time to actually engage with it, they can’t find it, don’t have time for it, or feel overwhelmed.
+## Who This Is For
+Cached is built for people who are ambitious, curious, and time-constrained:
 
-Cached eliminates the gap between saving and doing.
+- Founders, engineers, consultants, and operators
+- Professionals learning new skills while working full-time
+- Career switchers building focused learning plans
+- Lifelong learners who save more than they consume
 
-It centralizes everything you’ve saved, understands your goals, and automatically schedules content into your real life — based on your availability, routines, and content length.
+If you regularly save videos, articles, threads, podcasts, and newsletters "for later" but never get to them, this is for you.
 
----
+## Problem It Solves
+Knowledge workers usually face three recurring problems:
 
-## The Problem
+1. Fragmentation: saved content is scattered across many apps and platforms.
+2. Backlog overload: saved items pile up with no priority or time commitment.
+3. Execution gap: intention exists, but nothing is mapped to real calendar time.
 
-The modern knowledge worker has three problems:
+Result: useful content becomes digital guilt instead of progress.
 
-### 1. Fragmentation
-Content is saved across platforms and tools — bookmarks, notes apps, DMs, playlists, screenshots.
+## How Cached Solves It
+Cached adds an execution layer between "saved" and "done."
 
-### 2. Overwhelm
-Saved content becomes an unstructured backlog with no priority, no context, and no time assigned.
+1. Centralize content
+- Save links from YouTube, X, LinkedIn, Spotify, podcasts, GitHub, articles, and newsletters.
 
-### 3. No Execution Layer
-Saving is easy. Acting is hard. No tool bridges the gap between intention and scheduled execution.
+2. Attach intent
+- Organize items by category and goal, like "system design" or "improve Spanish."
 
-The result:
-You consume less than 20% of what you save — and feel behind on your own interests.
+3. Model real availability
+- Define actual learning windows based on your week, routines, and constraints.
 
----
+4. Auto-schedule intelligently
+- Place the right content into the right time block based on duration, format, and priorities.
 
-## The Solution
+5. Keep what matters
+- Generate summaries, store notes, and build a searchable learning vault over time.
 
-Cached turns saved content into scheduled experiences.
+## Core Experience
+- Dashboard: today’s schedule, weekly progress, and time invested.
+- Calendar: flexible blocks, skip/reschedule, and adaptive rebalancing.
+- Learning Vault: categorized summaries and editable notes.
 
-Instead of acting like a bookmark manager, Cached acts like an intelligent content orchestrator.
+## Feature Breakdown
+### 1) Capture Layer (Save From Anywhere)
+- Save any URL into one unified inbox.
+- Auto-detect content type: video, article, podcast, thread, repository, newsletter.
+- Extract metadata automatically: title, source, estimated duration/reading time, thumbnail.
+- Keep all saved content searchable in one place.
 
-### Step 1: Centralize
-Save or forward any link:
-- YouTube videos
-- X (Twitter) threads
-- LinkedIn posts
-- Articles & blogs
-- Podcasts & Spotify episodes
-- GitHub repositories
-- Newsletters
+### 2) Intent Layer (Goal-Driven Organization)
+- Create learning categories (for example: AI, system design, language learning, health).
+- Assign each category a clear objective and priority.
+- Tag saved content to one or more categories.
+- Track progress by category instead of by random links.
 
-Everything lives in one structured library.
+### 3) Time Layer (Real-Life Availability Mapping)
+- Define recurring learning windows across your week.
+- Support different block types: deep work blocks, quick learning slots, commute/audio slots.
+- Set constraints for each slot such as preferred format and max duration.
+- Build a schedule that reflects your actual life, not idealized plans.
 
----
+### 4) Scheduling Engine (From Backlog to Calendar)
+- Match content length to available block size.
+- Match format to context (audio for commute, long-form for focus windows).
+- Prioritize categories that are behind weekly goals.
+- Generate calendar-ready learning blocks automatically.
+- Rebalance upcoming blocks when you skip or reschedule.
 
-### Step 2: Define Intent
+### 5) Execution Layer (Do the Work, Not Just Plan It)
+- See a clear “what to consume now” view for today.
+- Mark items complete, skipped, or postponed.
+- Swap content inside a time block without breaking your weekly structure.
+- Preserve momentum with streaks and progress visibility.
 
-When adding content, Cached asks:
+### 6) Learning Vault (Retention and Reuse)
+- Generate AI summaries and key takeaways after consumption.
+- Save manual notes and edits alongside generated summaries.
+- Keep insights grouped by category for long-term compounding.
+- Search past learnings quickly when you need to recall concepts.
 
-- Is this **Work-related**, **Personal Growth**, **Hobby**, **Fitness**, or something else?
-- What is your broader goal for this category?
-  - “Become better at system design”
-  - “Learn photography”
-  - “Improve Spanish”
-  - “Stay informed about AI”
+### 7) Insights and Feedback Loop
+- Track time spent by category and by week.
+- Compare planned vs completed learning blocks.
+- Identify which goals are progressing and which are slipping.
+- Improve future scheduling decisions with usage patterns.
 
-Each piece of content is attached to a meaningful objective.
-
----
-
-### Step 3: Map Your Real Life
-
-Cached learns your actual schedule:
-
-- Work hours (e.g., 9–5)
-- Gym sessions
-- Commute times
-- Focus blocks
-- Free evenings
-- Weekends
-- Travel patterns
-
-You define available learning windows like:
-
-- Tuesdays & Thursdays 10:00–11:00 → Deep Work Learning
-- Commute time → Audio content only
-- Sunday 17:00–19:00 → Hobby block
-
----
-
-### Step 4: Intelligent Scheduling
-
-Cached automatically places content into your calendar based on:
-
-- Content length (e.g., 45-min podcast won’t be placed in a 20-min gap)
-- Format compatibility (audio during commute, long-form during focus blocks)
-- Category priority
-- Weekly learning goals
-- Available time windows
-
-It doesn’t force specific content — it schedules category blocks, allowing flexibility inside them.
-
----
-
-### Step 5: Extract Learnings
-
-After consumption, Cached:
-
-- Highlights key takeaways (AI-generated)
-- Stores them inside the category’s Learning Vault
-- Allows manual notes and edits
-- Builds a growing, structured knowledge base over time
-
-Your learning becomes cumulative — not disposable.
-
----
-
-## Core Product Experience
-
-### Dashboard
-- Today’s scheduled content
-- Weekly overview
-- Category progress
-- Time invested this week
-- Learning streak
-
-### Calendar View
-- Drag & adjust blocks
-- Swap content
-- Skip / reschedule easily
-- Adaptive rebalancing
-
-### Learning Vault
-- Categorized insights
-- Searchable summaries
-- Editable notes
-- Knowledge accumulation over time
-
----
-
-## Target Audience
-
-Cached is designed for:
-
-### Primary Audience
-- Knowledge workers who save more than they consume
-- Builders, founders, engineers, consultants
-- Curious professionals with ambition but limited time
-- People overwhelmed by digital clutter
-
-### Secondary Audience
-- Career switchers building new skill stacks
-- Students supplementing formal education
-- Creators researching across multiple domains
-- Lifelong learners managing multiple interests
-
-Not a reading app.
-Not a productivity tracker.
-Not a note-taking tool.
-
-Cached is a **content execution system**.
-
----
-
-## MVP Scope (Phase 1)
-
-Must-have:
-- URL saving & parsing
+## Product Scope
+### MVP
+- URL saving and metadata parsing
 - Category tagging
-- Availability scheduling setup
-- Smart calendar placement
+- Availability setup
+- Smart schedule generation
 - AI summaries
-- Manual rescheduling
-- Basic analytics (time spent per category)
+- Rescheduling workflows
+- Basic category analytics
 
-Later:
+### Later
 - Public learning paths
 - Social accountability
-- Advanced analytics
-- AI-prioritized content ranking
-- Team / company plans
-- Native mobile apps
+- Advanced analytics and ranking
+- Team plans
+- Mobile apps
 
----
+## End-to-End Workflow
+1. Save content from any source.
+2. Assign it to a goal/category.
+3. Cached places it into your real available time.
+4. You consume inside scheduled blocks.
+5. Cached stores summaries and notes.
+6. Progress and insights improve next week’s plan.
 
-## Monetization
+## Example Use Cases
+- Engineer leveling up in system design while working full-time.
+- Founder staying current on AI and product strategy with limited weekly bandwidth.
+- Career switcher building a structured curriculum without creating a manual study plan.
+- Creator managing research inputs from multiple channels without backlog chaos.
 
-Free:
+## Business Model
+### Free
 - Unlimited saves
 - 2 active categories
 - Basic scheduling
 
-Pro:
+### Pro
 - Unlimited categories
 - Advanced scheduling logic
-- AI summaries & vault
-- Calendar sync (Google / Apple)
-- Smart rebalancing
-- Insights & analytics
-
-Future:
-- Team version
-- Creator monetization
-- Curated expert paths marketplace
-
----
+- AI summaries and learning vault
+- Calendar sync
+- Rebalancing and deeper insights
 
 ## Tech Stack
-
 | Layer | Technology |
 |---|---|
-| Frontend | Next.js 14 (App Router) |
+| Frontend | Next.js (App Router) |
 | Styling | Tailwind CSS + shadcn/ui |
-| Animation | Framer Motion |
-| Background | HTML5 Video |
 | Backend | Next.js Server Actions + API Routes |
 | Database | Supabase (PostgreSQL) |
 | Auth | Supabase Auth (Google OAuth) |
-| Payments | Stripe (subscription billing) |
-| AI summaries | Claude API (Anthropic) |
+| Billing | Stripe |
+| AI | Claude API (Anthropic) |
 | Deployment | Vercel |
 
----
+## Positioning
+Cached is not:
+- A basic bookmark manager
+- A generic to-do app
+- A passive read-it-later list
+
+Cached is:
+- A personal learning orchestration system
+- A bridge from intention to execution
+- A way to make saved content actually compound
+- A weekly operating system for continuous, intentional growth
 
 ## Vision
+The future of learning is not more content. It is better orchestration.
 
-The future of learning is not more content.
-
-It’s better orchestration.
-
-Cached becomes the operating system for personal curiosity — turning digital chaos into intentional growth.
-
-From saved to scheduled.
-From intention to action.
+Cached turns digital clutter into deliberate progress.
