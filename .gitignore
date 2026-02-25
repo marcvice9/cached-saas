@@ -1,5 +1,7 @@
 .env
 .env.local
+.claude
+.ignore
 
 # Dependencies
 node_modules/
