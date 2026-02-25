@@ -5,7 +5,8 @@ async function handleLogout(request: Request) {
   const url = new URL(request.url);
   const supabase = await createClient();
   await supabase.auth.signOut({ scope: "local" });
-  return NextResponse.redirect(new URL("/?logged_out=1", url.origin));
+  // Use 303 so POST /auth/logout redirects to GET / and avoids 405.
+  return NextResponse.redirect(new URL("/?logged_out=1", url.origin), 303);
 }
 
 export async function GET(request: Request) {

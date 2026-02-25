@@ -94,23 +94,6 @@ Cached adds an execution layer between "saved" and "done."
 - Identify which goals are progressing and which are slipping.
 - Improve future scheduling decisions with usage patterns.
 
-## Product Scope
-### MVP
-- URL saving and metadata parsing
-- Category tagging
-- Availability setup
-- Smart schedule generation
-- AI summaries
-- Rescheduling workflows
-- Basic category analytics
-
-### Later
-- Public learning paths
-- Social accountability
-- Advanced analytics and ranking
-- Team plans
-- Mobile apps
-
 ## End-to-End Workflow
 1. Save content from any source.
 2. Assign it to a goal/category.
