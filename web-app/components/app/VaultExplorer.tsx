@@ -28,12 +28,10 @@ export default function VaultExplorer({
   const [searchResults, setSearchResults] = useState<AISummaryWithContent[] | null>(null);
   const [editingNotes, setEditingNotes] = useState<string | null>(null);
   const [notesText, setNotesText] = useState("");
-  const [expandedSummaryId, setExpandedSummaryId] = useState<string | null>(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
 
   const baseSummaries = searchResults ?? initialSummaries;
 
-  // Apply category filter client-side
   const summaries = selectedCategoryId
     ? baseSummaries.filter((s) =>
         getCategoriesForSummary(s).some((c) => c.id === selectedCategoryId)
@@ -74,65 +72,63 @@ export default function VaultExplorer({
         setEditingNotes(null);
         router.refresh();
       } catch {
-        // Silently fail
+        // no-op
       }
     });
   };
 
   return (
-    <div>
-      {/* Search */}
-      <form onSubmit={handleSearch} className="mb-4">
-        <div className="flex gap-3">
-          <div className="relative flex-1">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search summaries, takeaways, and notes..."
-              className="w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 pl-10 text-sm outline-none transition-colors placeholder:text-gray-400 focus:border-brand-orange"
-            />
-            <svg
-              className="absolute left-3 top-3 text-gray-400"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-          </div>
-          <button
-            type="submit"
-            disabled={isPending}
-            className="rounded-lg bg-brand-dark px-4 py-2.5 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
+    <div className="space-y-4">
+      <form onSubmit={handleSearch} className="rounded-3xl border border-white/10 bg-[#202327] p-4">
+        <div className="relative">
+          <svg
+            className="pointer-events-none absolute left-3 top-3.5 text-zinc-500"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
           >
-            Search
-          </button>
-          {searchResults !== null && (
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search your journal"
+            className="h-11 w-full rounded-2xl border border-zinc-300 bg-white pl-10 pr-24 text-sm text-[#1A1C1E] outline-none placeholder:text-zinc-500"
+          />
+          <div className="absolute right-2 top-2 flex gap-2">
             <button
-              type="button"
-              onClick={clearSearch}
-              className="rounded-lg bg-gray-100 px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-200"
+              type="submit"
+              disabled={isPending}
+              className="rounded-xl bg-[#1F5C56] px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50"
             >
-              Clear
+              Search
             </button>
-          )}
+            {searchResults !== null && (
+              <button
+                type="button"
+                onClick={clearSearch}
+                className="rounded-xl border border-white/20 px-3 py-1.5 text-xs text-zinc-200"
+              >
+                Clear
+              </button>
+            )}
+          </div>
         </div>
       </form>
 
-      {/* Category filter chips */}
       {categories.length > 0 && (
-        <div className="mb-4 flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setSelectedCategoryId(null)}
-            className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+            className={`flex min-w-[96px] items-center justify-center rounded-xl px-3 py-1.5 text-xs font-semibold ${
               selectedCategoryId === null
-                ? "bg-brand-dark text-white"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                ? "bg-[#06D6A0] text-[#0E2E29]"
+                : "bg-white/10 text-zinc-200"
             }`}
           >
             All
@@ -145,10 +141,10 @@ export default function VaultExplorer({
                   selectedCategoryId === cat.id ? null : cat.id
                 )
               }
-              className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+              className={`flex min-w-[96px] items-center justify-center rounded-xl px-3 py-1.5 text-xs font-semibold ${
                 selectedCategoryId === cat.id
-                  ? "bg-brand-dark text-white"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  ? "bg-[#06D6A0] text-[#0E2E29]"
+                  : "bg-white/10 text-zinc-200"
               }`}
             >
               {cat.name}
@@ -157,116 +153,62 @@ export default function VaultExplorer({
         </div>
       )}
 
-      {searchResults !== null && (
-        <p className="mb-4 text-sm text-gray-500">
-          {summaries.length} result{summaries.length !== 1 ? "s" : ""}{" "}
-          for &quot;{searchQuery}&quot;
-        </p>
-      )}
-
-      {/* Summaries List */}
       {summaries.length === 0 ? (
-        <div className="rounded-xl bg-white p-12 text-center shadow-sm">
-          <p className="text-gray-500">
-            {searchResults !== null
-              ? "No summaries match your search."
-              : selectedCategoryId
-                ? "No summaries in this category."
-                : "No summaries yet. Mark content as Done to generate AI summaries."}
-          </p>
+        <div className="rounded-3xl border border-white/10 bg-[#202327] p-12 text-center text-zinc-400">
+          {searchResults !== null
+            ? "No summaries match your search."
+            : "No journal entries yet. Complete scheduled content to populate this vault."}
         </div>
       ) : (
         <div className="space-y-4">
           {summaries.map((summary) => {
             const summaryCategories = getCategoriesForSummary(summary);
-            const isFullSummaryExpanded = expandedSummaryId === summary.id;
 
             return (
-              <div
+              <article
                 key={summary.id}
-                className={`rounded-xl bg-white p-5 shadow-sm transition-opacity ${
+                className={`mx-auto w-full max-w-4xl rounded-3xl border border-white/10 bg-[#262A2F] p-6 text-white ${
                   isPending ? "opacity-60" : ""
                 }`}
               >
-                {/* Title + Category badges */}
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0 flex-1">
-                    {summary.content && (
-                      <a
-                        href={summary.content.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block truncate text-sm font-semibold text-brand-dark hover:text-brand-orange"
+                <div className="flex items-center justify-between gap-3">
+                  <a
+                    href={summary.content?.url || "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="truncate text-lg font-semibold text-white"
+                  >
+                    {summary.content?.title || "Untitled"}
+                  </a>
+                  <div className="flex gap-2">
+                    {summaryCategories.slice(0, 2).map((cat) => (
+                      <span
+                        key={cat.id}
+                        className="rounded-full bg-[#06D6A0]/18 px-2 py-0.5 text-xs text-[#9AF2DC]"
                       >
-                        {summary.content.title}
-                      </a>
-                    )}
+                        {cat.name}
+                      </span>
+                    ))}
                   </div>
-                  {summaryCategories.length > 0 && (
-                    <div className="flex flex-shrink-0 gap-1.5">
-                      {summaryCategories.map((cat) => (
-                        <span
-                          key={cat.id}
-                          className="rounded-full bg-brand-orange/10 px-2 py-0.5 text-xs font-medium text-brand-orange"
-                        >
-                          {cat.name}
-                        </span>
-                      ))}
-                    </div>
-                  )}
                 </div>
 
-                {/* Summary text (truncated with toggle) */}
-                <div className="mt-2">
-                  <p
-                    className={`text-sm text-gray-700 ${
-                      !isFullSummaryExpanded ? "line-clamp-2" : ""
-                    }`}
-                  >
+                <div className="mt-4 rounded-2xl border border-zinc-300 bg-[#ECE8DE] p-4 text-[#141618]">
+                  <div className="mb-2 flex items-center gap-2">
+                    <span className="rounded-full bg-[#06D6A0]/20 px-2 py-0.5 text-[11px] font-semibold text-[#1F5C56]">AI Generated ✦</span>
+                    <p className="text-xs uppercase tracking-wide text-zinc-600">Summary</p>
+                  </div>
+                  <p className="text-[16px] leading-7 [font-family:ui-serif,Georgia,Cambria,Times_New_Roman,Times,serif]">
                     {summary.summary_text}
                   </p>
-                  {summary.summary_text.length > 200 && (
-                    <button
-                      onClick={() =>
-                        setExpandedSummaryId(
-                          isFullSummaryExpanded ? null : summary.id
-                        )
-                      }
-                      className="mt-1 text-xs font-medium text-brand-teal hover:underline"
-                    >
-                      {isFullSummaryExpanded ? "Show less" : "Show more"}
-                    </button>
-                  )}
                 </div>
 
-                {/* Topics */}
-                {summary.suggested_topics &&
-                  summary.suggested_topics.length > 0 && (
-                    <div className="mt-2 flex flex-wrap gap-1.5">
-                      {summary.suggested_topics.map((topic, i) => (
-                        <span
-                          key={i}
-                          className="rounded-full bg-brand-teal/10 px-2 py-0.5 text-xs font-medium text-brand-teal"
-                        >
-                          {topic}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                {/* Key Takeaways - always visible */}
                 {summary.key_takeaways.length > 0 && (
-                  <div className="mt-3">
-                    <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-400">
-                      Key Takeaways
-                    </h4>
-                    <ul className="space-y-1">
+                  <div className="mt-4 rounded-2xl border border-[#06D6A0]/30 bg-[#06D6A0]/10 p-4">
+                    <p className="mb-2 text-xs uppercase tracking-wide text-[#9CF4DE]">AI Key Takeaways</p>
+                    <ul className="space-y-1 text-sm text-zinc-100">
                       {summary.key_takeaways.map((takeaway, i) => (
-                        <li
-                          key={i}
-                          className="flex items-start gap-2 text-sm text-gray-700"
-                        >
-                          <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand-orange" />
+                        <li key={i} className="flex items-start gap-2">
+                          <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-[#06D6A0]" />
                           {takeaway}
                         </li>
                       ))}
@@ -274,14 +216,13 @@ export default function VaultExplorer({
                   </div>
                 )}
 
-                {/* User Notes - always visible */}
-                <div className="mt-3 rounded-lg bg-gray-50 p-3">
+                <div className="mt-4 rounded-2xl border border-white/15 bg-white/5 p-3">
                   {editingNotes === summary.id ? (
                     <div>
                       <textarea
                         value={notesText}
                         onChange={(e) => setNotesText(e.target.value)}
-                        className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-orange"
+                        className="w-full rounded-xl border border-white/20 bg-[#1F2328] px-3 py-2 text-sm text-white outline-none"
                         rows={3}
                         placeholder="Add your notes..."
                       />
@@ -289,46 +230,33 @@ export default function VaultExplorer({
                         <button
                           onClick={() => saveNotes(summary.id)}
                           disabled={isPending}
-                          className="rounded-lg bg-brand-orange px-3 py-1.5 text-xs font-medium text-white hover:opacity-90 disabled:opacity-50"
+                          className="rounded-lg bg-[#06D6A0] px-3 py-1.5 text-xs font-semibold text-[#0E2E29] disabled:opacity-50"
                         >
                           Save
                         </button>
                         <button
                           onClick={() => setEditingNotes(null)}
-                          className="rounded-lg bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-200"
+                          className="rounded-lg border border-white/20 px-3 py-1.5 text-xs text-zinc-300"
                         >
                           Cancel
                         </button>
                       </div>
                     </div>
                   ) : (
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="min-w-0 flex-1">
-                        {summary.user_notes ? (
-                          <p className="text-sm text-gray-600">
-                            {summary.user_notes}
-                          </p>
-                        ) : (
-                          <p className="text-sm italic text-gray-400">
-                            No notes yet
-                          </p>
-                        )}
-                      </div>
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="text-sm text-zinc-300">
+                        {summary.user_notes || "No personal notes yet."}
+                      </p>
                       <button
                         onClick={() => startEditNotes(summary)}
-                        className="flex-shrink-0 rounded-lg bg-white px-2.5 py-1 text-xs font-medium text-gray-500 shadow-sm hover:bg-gray-100"
+                        className="rounded-lg border border-white/20 px-2.5 py-1 text-xs text-zinc-300"
                       >
                         {summary.user_notes ? "Edit" : "Add Notes"}
                       </button>
                     </div>
                   )}
                 </div>
-
-                {/* Date */}
-                <p className="mt-2 text-xs text-gray-400">
-                  {new Date(summary.created_at).toLocaleDateString()}
-                </p>
-              </div>
+              </article>
             );
           })}
         </div>

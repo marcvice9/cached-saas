@@ -11,9 +11,9 @@ export default async function VaultPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-brand-dark">Learning Vault</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          AI-generated summaries and takeaways from your consumed content
+        <h1 className="text-2xl font-semibold text-white">The Knowledge Journal</h1>
+        <p className="mt-1 text-sm text-zinc-400">
+          Read your AI summaries as clean journal pages.
         </p>
       </div>
 

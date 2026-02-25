@@ -33,13 +33,13 @@ const PLATFORM_LABELS: Record<string, string> = {
   OTHER: "Link",
 };
 
-const STATUS_COLORS: Record<string, string> = {
-  QUEUED: "bg-yellow-100 text-yellow-800",
-  SCHEDULED: "bg-blue-100 text-blue-800",
-  CONSUMED: "bg-green-100 text-green-800",
-  SKIPPED: "bg-gray-100 text-gray-600",
-  ARCHIVED: "bg-gray-100 text-gray-600",
-};
+function isExtracting(
+  content: SavedContent & { ai_summary?: AISummary | null }
+): boolean {
+  const createdAt = new Date(content.created_at).getTime();
+  const ageMs = Date.now() - createdAt;
+  return ageMs < 1000 * 60 * 3 && !content.ai_summary;
+}
 
 export default function ContentList({
   initialContent,
@@ -61,7 +61,6 @@ export default function ContentList({
     startTransition(async () => {
       await updateContentStatus(contentId, status);
       if (status === "CONSUMED" && !hasSummary) {
-        // Fallback: generate summary if it wasn't generated on save
         fetch("/api/ai/generate-summary", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -81,178 +80,144 @@ export default function ContentList({
   };
 
   return (
-    <div>
-      {/* Filter Tabs */}
-      <div className="mb-4 flex gap-1 rounded-lg bg-gray-100 p-1">
-        {STATUS_TABS.map((tab) => (
-          <button
-            key={tab.value}
-            onClick={() => setFilter(tab.value)}
-            className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-              filter === tab.value
-                ? "bg-white text-brand-dark shadow-sm"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            {tab.label}
-            {tab.value !== "ALL" && (
-              <span className="ml-1.5 text-xs text-gray-400">
-                {initialContent.filter((c) =>
-                  tab.value === "ALL" ? true : c.status === tab.value
-                ).length}
-              </span>
-            )}
-          </button>
-        ))}
-      </div>
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-end gap-1.5">
+        {STATUS_TABS.map((tab) => {
+          const count =
+            tab.value === "ALL"
+              ? initialContent.length
+              : initialContent.filter((c) => c.status === tab.value).length;
 
-      {/* Content List */}
-      {filteredContent.length === 0 ? (
-        <div className="rounded-xl bg-white p-12 text-center shadow-sm">
-          <p className="text-gray-500">
-            {filter === "ALL"
-              ? "No content saved yet. Paste a URL above to get started!"
-              : `No ${filter.toLowerCase()} content.`}
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {filteredContent.map((content) => (
-            <div
-              key={content.id}
-              className={`group rounded-xl bg-white p-4 shadow-sm transition-opacity ${
-                isPending ? "opacity-60" : ""
+          return (
+            <button
+              key={tab.value}
+              onClick={() => setFilter(tab.value)}
+              className={`rounded-t-xl border border-b-0 px-4 py-2 text-sm font-semibold transition ${
+                filter === tab.value
+                  ? "border-[#06D6A0] bg-[#06D6A0] text-[#0E2E29]"
+                  : "border-white/10 bg-[#2B2E33] text-zinc-300 hover:bg-[#353A42]"
               }`}
             >
-              <div className="flex items-start gap-4">
-                {/* Thumbnail */}
-                {content.thumbnail_url ? (
-                  <img
-                    src={content.thumbnail_url}
-                    alt=""
-                    className="h-20 w-32 flex-shrink-0 rounded-lg object-cover"
-                  />
-                ) : (
-                  <div className="flex h-20 w-32 flex-shrink-0 items-center justify-center rounded-lg bg-gray-100">
-                    <span className="text-2xl text-gray-300">
-                      {content.content_format === "VIDEO"
-                        ? "▶"
-                        : content.content_format === "AUDIO"
-                          ? "♪"
-                          : "📄"}
-                    </span>
-                  </div>
-                )}
+              {tab.label} ({count})
+            </button>
+          );
+        })}
+      </div>
 
-                {/* Info */}
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-start justify-between gap-2">
-                    <a
-                      href={content.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-medium text-brand-dark hover:text-brand-orange"
-                    >
-                      {content.title}
-                    </a>
-                    <span
-                      className={`flex-shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        STATUS_COLORS[content.status]
-                      }`}
-                    >
-                      {content.status}
-                    </span>
-                  </div>
+      <div className="rounded-3xl border border-white/10 bg-[#202327] p-4">
+        {filteredContent.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-white/20 bg-[#1A1C1E] p-12 text-center text-zinc-400">
+            {filter === "ALL"
+              ? "No links saved yet. Add one above."
+              : `No ${filter.toLowerCase()} content.`}
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {filteredContent.map((content) => {
+              const extracting = isExtracting(content);
 
-                  {content.description && (
-                    <p className="mt-1 line-clamp-2 text-sm text-gray-500">
-                      {content.description}
-                    </p>
-                  )}
-
-                  {content.categories && content.categories.length > 0 && (
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {content.categories.map((cat) => (
-                        <span
-                          key={cat.id}
-                          className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-700"
-                        >
-                          {cat.name}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  <div className="mt-2 flex items-center gap-3 text-xs text-gray-400">
-                    <span>{PLATFORM_LABELS[content.source_platform] || content.source_platform}</span>
-                    <span>·</span>
-                    <span>{FORMAT_LABELS[content.content_format] || content.content_format}</span>
-                    <span>·</span>
-                    <span>{content.estimated_duration_minutes} min</span>
-                    <span>·</span>
-                    <span>
-                      {new Date(content.created_at).toLocaleDateString()}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* AI Summary */}
-              {content.ai_summary ? (
-                <div className="mt-3 rounded-lg bg-brand-teal/5 px-4 py-3 border border-brand-teal/10">
-                  <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-brand-teal">
-                    AI Summary
-                  </p>
-                  <p className="text-sm text-gray-600 line-clamp-3">
-                    {content.ai_summary.summary_text}
-                  </p>
-                </div>
-              ) : (
-                <div className="mt-3 rounded-lg bg-gray-50 px-4 py-2.5 border border-gray-100">
-                  <p className="text-xs text-gray-400 italic">
-                    ✨ AI summary generating…
-                  </p>
-                </div>
-              )}
-
-              {/* Actions */}
-              <div className="mt-3 flex gap-2 border-t border-gray-50 pt-3">
-                {content.status === "QUEUED" && (
-                  <button
-                    onClick={() => handleStatusUpdate(content.id, "CONSUMED", !!content.ai_summary)}
-                    className="rounded-lg bg-green-50 px-3 py-1.5 text-xs font-medium text-green-700 hover:bg-green-100"
-                  >
-                    Mark Done
-                  </button>
-                )}
-                {(content.status === "QUEUED" ||
-                  content.status === "SCHEDULED") && (
-                  <button
-                    onClick={() => handleStatusUpdate(content.id, "ARCHIVED")}
-                    className="rounded-lg bg-gray-50 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100"
-                  >
-                    Archive
-                  </button>
-                )}
-                {content.status === "ARCHIVED" && (
-                  <button
-                    onClick={() => handleStatusUpdate(content.id, "QUEUED")}
-                    className="rounded-lg bg-yellow-50 px-3 py-1.5 text-xs font-medium text-yellow-700 hover:bg-yellow-100"
-                  >
-                    Re-queue
-                  </button>
-                )}
-                <button
-                  onClick={() => handleDelete(content.id)}
-                  className="rounded-lg px-3 py-1.5 text-xs font-medium text-red-500 hover:bg-red-50"
+              return (
+                <article
+                  key={content.id}
+                  className={`rounded-2xl border border-white/10 bg-[#2A2E33] p-4 text-zinc-100 ${
+                    isPending ? "opacity-60" : ""
+                  }`}
                 >
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+                  <div className="flex items-start gap-3">
+                    {content.thumbnail_url ? (
+                      <img
+                        src={content.thumbnail_url}
+                        alt=""
+                        className="h-20 w-32 flex-shrink-0 rounded-xl border border-white/20 object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-20 w-32 flex-shrink-0 items-center justify-center rounded-xl border border-white/20 bg-white/10 text-zinc-300">
+                        {PLATFORM_LABELS[content.source_platform]?.[0] || "L"}
+                      </div>
+                    )}
+
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-start justify-between gap-2">
+                        <a
+                          href={content.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="truncate text-sm font-semibold text-white"
+                        >
+                          {content.title}
+                        </a>
+                        <span className="rounded-full bg-[#A78BFA]/20 px-2.5 py-1 text-[11px] font-medium text-[#E4DDFF]">
+                          {content.status}
+                        </span>
+                      </div>
+
+                      <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-zinc-400">
+                        <span>{PLATFORM_LABELS[content.source_platform] || content.source_platform}</span>
+                        <span>•</span>
+                        <span>{FORMAT_LABELS[content.content_format] || content.content_format}</span>
+                        <span>•</span>
+                        <span>{content.estimated_duration_minutes} min</span>
+                      </div>
+
+                      {content.description && (
+                        <p className="mt-2 line-clamp-2 text-sm text-zinc-300">{content.description}</p>
+                      )}
+
+                      {extracting ? (
+                        <div className="relative mt-3 overflow-hidden rounded-xl border border-white/15 bg-white/5 px-3 py-2">
+                          <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.8s_infinite] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                          <p className="relative text-xs text-[#7BEED4]">Extracting metadata and summary...</p>
+                        </div>
+                      ) : content.ai_summary ? (
+                        <div className="mt-3 rounded-xl border border-[#06D6A0]/35 bg-[#06D6A0]/10 px-3 py-2">
+                          <div className="mb-1 flex items-center gap-2">
+                            <span className="rounded-full bg-[#06D6A0]/30 px-2 py-0.5 text-[11px] font-semibold text-[#A9F7E5]">AI Generated ✦</span>
+                            <p className="text-xs font-semibold text-[#7BEED4]">Summary</p>
+                          </div>
+                          <p className="line-clamp-3 text-xs text-zinc-200">{content.ai_summary.summary_text}</p>
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+
+                  <div className="mt-3 flex flex-wrap gap-2 border-t border-white/10 pt-3">
+                    {content.status === "QUEUED" && (
+                      <button
+                        onClick={() => handleStatusUpdate(content.id, "CONSUMED", !!content.ai_summary)}
+                        className="rounded-xl bg-[#1F5C56] px-3 py-1.5 text-xs font-medium text-white"
+                      >
+                        Mark Done
+                      </button>
+                    )}
+                    {(content.status === "QUEUED" || content.status === "SCHEDULED") && (
+                      <button
+                        onClick={() => handleStatusUpdate(content.id, "ARCHIVED")}
+                        className="rounded-xl border border-white/20 px-3 py-1.5 text-xs text-zinc-200"
+                      >
+                        Archive
+                      </button>
+                    )}
+                    {content.status === "ARCHIVED" && (
+                      <button
+                        onClick={() => handleStatusUpdate(content.id, "QUEUED")}
+                        className="rounded-xl border border-white/20 px-3 py-1.5 text-xs text-zinc-200"
+                      >
+                        Re-queue
+                      </button>
+                    )}
+                    <button
+                      onClick={() => handleDelete(content.id)}
+                      className="rounded-xl px-3 py-1.5 text-xs text-red-300 hover:bg-red-500/20"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
